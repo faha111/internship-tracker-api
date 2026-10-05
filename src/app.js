@@ -1,6 +1,9 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+   import path from 'node:path';
+   import { existsSync } from 'node:fs';
+   import { fileURLToPath } from 'node:url';
 
 export const STATUSES = ['applied', 'interview', 'offer', 'rejected'];
 
@@ -8,7 +11,7 @@ export function createApp(db, secret) {
   if (!secret) throw new Error('JWT secret is required');
   const app = express();
   app.use(express.json());
-     app.get('/', (req, res) => res.json({ name: 'Internship Tracker API', status: 'running' }));
+      
 
   const auth = (req, res, next) => {
     const token = (req.headers.authorization || '').replace('Bearer ', '');
@@ -79,6 +82,8 @@ export function createApp(db, secret) {
     const rows = db.prepare('SELECT status, COUNT(*) AS n FROM applications WHERE user_id = ? GROUP BY status').all(req.userId);
     res.json(Object.fromEntries(STATUSES.map(s => [s, rows.find(r => r.status === s)?.n ?? 0])));
   });
-
+     // Serve the built React frontend when it exists (used in production).
+     const dist = path.join(path.dirname(fileURLToPath(import.meta.url)), '../client/dist');
+     if (existsSync(dist)) app.use(express.static(dist));
   return app;
 }
