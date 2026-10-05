@@ -4,7 +4,7 @@
   "description": "REST API to track internship applications (JWT auth, SQLite, tests)",
   "main": "src/server.js",
   "type": "module",
-  "scripts": { "start": "node src/server.js", "test": "node --test \"test/*.test.js\"" },
+     "scripts": { "start": "node src/server.js", "test": "node --test \"test/*.test.js\"", "build": "npm install --prefix client --include=dev && npm run build --prefix client" },
   "engines": { "node": ">=22.13" },
   "license": "MIT",
   "dependencies": { "bcryptjs": "^2.4.3", "express": "^4.19.2", "jsonwebtoken": "^9.0.2" }
